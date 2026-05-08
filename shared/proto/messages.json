@@ -1,0 +1,106 @@
+{
+  "description": "NDiscord WebSocket Protocol",
+  "version": "1.0",
+  "messages": {
+    "subscribe_channel": {
+      "fields": {
+        "type": "subscribe_channel",
+        "channel_id": "uuid"
+      }
+    },
+    "unsubscribe_channel": {
+      "fields": {
+        "type": "unsubscribe_channel",
+        "channel_id": "uuid"
+      }
+    },
+    "chat_message": {
+      "fields": {
+        "type": "chat_message",
+        "channel_id": "uuid",
+        "content": "string",
+        "encrypted": "boolean (optional, default false)",
+        "reply_to_id": "uuid (optional)"
+      }
+    },
+    "dm_message": {
+      "fields": {
+        "type": "dm_message",
+        "conversation_id": "uuid",
+        "content": "string",
+        "encrypted": "boolean (optional, default false)"
+      }
+    },
+    "typing_start": {
+      "fields": {
+        "type": "typing_start",
+        "channel_id": "uuid"
+      }
+    },
+    "typing_stop": {
+      "fields": {
+        "type": "typing_stop",
+        "channel_id": "uuid"
+      }
+    },
+    "join_voice": {
+      "fields": {
+        "type": "join_voice",
+        "channel_id": "uuid"
+      }
+    },
+    "leave_voice": {
+      "fields": {
+        "type": "leave_voice",
+        "channel_id": "uuid"
+      }
+    },
+    "webrtc_signal": {
+      "fields": {
+        "type": "webrtc_signal",
+        "target_user_id": "uuid",
+        "signal": {
+          "type": "offer | answer | candidate",
+          "sdp": "object (for offer/answer)",
+          "candidate": "object (for ICE candidate)"
+        }
+      }
+    }
+  },
+  "server_events": {
+    "new_message": {
+      "fields": {
+        "type": "new_message",
+        "message": "Message object"
+      }
+    },
+    "new_dm_message": {
+      "fields": {
+        "type": "new_dm_message",
+        "message": "DMMessage object"
+      }
+    },
+    "presence_update": {
+      "fields": {
+        "type": "presence_update",
+        "user_id": "uuid",
+        "is_online": "boolean",
+        "status": "string"
+      }
+    },
+    "voice_user_joined": {
+      "fields": {
+        "type": "voice_user_joined",
+        "user_id": "uuid",
+        "channel_id": "uuid"
+      }
+    },
+    "voice_user_left": {
+      "fields": {
+        "type": "voice_user_left",
+        "user_id": "uuid",
+        "channel_id": "uuid"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "description": "NDiscord E2EE Protocol (Signal-like)",
+  "version": "1.0",
+  "key_exchange": {
+    "registration": {
+      "1": "Client generates identity key pair (X25519/ECDSA P-256)",
+      "2": "Client generates signed pre-key pair",
+      "3": "Client generates 100 one-time pre-keys",
+      "4": "Client uploads public keys to server via POST /api/v1/encryption/keys"
+    },
+    "session_establishment": {
+      "1": "Alice requests Bob's pre-key bundle via GET /api/v1/encryption/prekey-bundle/{user_id}",
+      "2": "Server returns Bob's identity key, signed pre-key, and one unused one-time pre-key",
+      "3": "Alice performs X3DH key agreement with Bob's keys",
+      "4": "Both parties derive shared secret",
+      "5": "Double Ratchet initialized for forward secrecy"
+    }
+  },
+  "message_encryption": {
+    "algorithm": "AES-256-GCM",
+    "key_derivation": "HKDF-SHA256",
+    "key_agreement": "X25519 (ECDH P-256 fallback)",
+    "forward_secrecy": "Double Ratchet Algorithm"
+  },
+  "encrypted_message_format": {
+    "ciphertext": "base64 encoded AES-GCM ciphertext",
+    "nonce": "12 bytes",
+    "mac": "16 bytes GCM authentication tag"
+  }
+}
