@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ndiscord/services/webrtc_service.dart';
+import 'package:ndiscord/services/ws_service.dart';
 import 'package:ndiscord/providers/chat_provider.dart';
 
 class VoiceState {

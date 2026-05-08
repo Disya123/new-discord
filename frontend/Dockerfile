@@ -1,14 +1,18 @@
-FROM ghcr.io/cirruslabs/flutter:stable AS build
+FROM ghcr.io/cirruslabs/flutter:3.24.5 AS build
+
+RUN flutter config --enable-web
 
 WORKDIR /app
-COPY pubspec.yaml ./
-RUN flutter pub get
 
-COPY . .
+COPY pubspec.yaml pubspec.lock ./
+RUN flutter pub get --no-version-check
 
-RUN flutter build web --release
+COPY lib/ lib/
+COPY web/ web/
 
-FROM nginx:alpine
+RUN flutter build web --release --no-tree-shake-icons
+
+FROM nginx:stable-alpine
 
 COPY --from=build /app/build/web /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf

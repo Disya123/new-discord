@@ -18,26 +18,23 @@ dependencies:
   http: ^1.2.1
   web_socket_channel: ^2.4.0
 
-  # Storage
+  # Storage (web-compatible)
   flutter_secure_storage: ^9.2.2
+  flutter_secure_storage_web: ^1.2.1
 
-  # Crypto
+  # Crypto (pure Dart - works on web)
   cryptography: ^2.7.0
-  pointycastle: ^3.9.1
 
   # WebRTC
   flutter_webrtc: ^0.11.7
 
   # UI
   google_fonts: ^6.2.1
-  cached_network_image: ^3.4.1
-  flutter_svg: ^2.0.16
 
   # Utils
   uuid: ^4.5.1
   intl: ^0.19.0
   json_annotation: ^4.9.0
-  freezed_annotation: ^2.4.4
   path_provider: ^2.1.4
 
 dev_dependencies:
@@ -46,11 +43,6 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   build_runner: ^2.4.13
   json_serializable: ^6.9.0
-  freezed: ^2.5.7
-  riverpod_generator: ^2.4.3
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/icons/
