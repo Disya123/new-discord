@@ -24,12 +24,13 @@ dist/
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 *.egg-info/
 .eggs/
 *.egg
 venv/
 .venv/
+.pytest_cache/
 
 # Flutter
 .dart_tool/

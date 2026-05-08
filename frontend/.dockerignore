@@ -1,0 +1,6 @@
+node_modules/
+.git/
+build/
+.dart_tool/
+.env
+*.md

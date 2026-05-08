@@ -4,12 +4,11 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: ndiscord_postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ndiscord
       POSTGRES_USER: ndiscord
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ndiscord_secret}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,12 +16,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - ndiscord
 
   redis:
     image: redis:7-alpine
     container_name: ndiscord_redis
-    ports:
-      - "6379:6379"
+    restart: unless-stopped
     volumes:
       - redis_data:/data
     healthcheck:
@@ -30,14 +30,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - ndiscord
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: ndiscord-backend:latest
     container_name: ndiscord_backend
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,14 +52,31 @@ services:
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 30
       REFRESH_TOKEN_EXPIRE_DAYS: 7
-      CORS_ORIGINS: '["http://localhost:3000","http://localhost:8080"]'
-    volumes:
-      - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      CORS_ORIGINS: '["http://localhost","http://localhost:8080","http://${SERVER_IP:-localhost}"]'
+      TURN_URL: ${TURN_URL:-stun:stun.l.google.com:19302}
+      TURN_USERNAME: ${TURN_USERNAME:-turnuser}
+      TURN_PASSWORD: ${TURN_PASSWORD:-turnpassword}
+    networks:
+      - ndiscord
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ndiscord-frontend:latest
+    container_name: ndiscord_frontend
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - backend
+    networks:
+      - ndiscord
 
   coturn:
     image: coturn/coturn:latest
     container_name: ndiscord_coturn
+    restart: unless-stopped
     ports:
       - "3478:3478/tcp"
       - "3478:3478/udp"
@@ -70,11 +89,17 @@ services:
       - --no-cli
       - --no-tlsv1
       - --no-tlsv1_1
-      - --user=turnuser:turnpassword
-      - --realm=ndiscord.local
+      - --user=${TURN_USERNAME:-turnuser}:${TURN_PASSWORD:-turnpassword}
+      - --realm=${TURN_REALM:-ndiscord.local}
     environment:
       DETECT_EXTERNAL_IP: "yes"
+    networks:
+      - ndiscord
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  ndiscord:
+    driver: bridge
