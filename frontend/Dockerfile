@@ -5,7 +5,7 @@ RUN flutter config --enable-web
 WORKDIR /app
 
 COPY pubspec.yaml pubspec.lock ./
-RUN flutter pub get --no-version-check
+RUN flutter pub get
 
 COPY lib/ lib/
 COPY web/ web/
